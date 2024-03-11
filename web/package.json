@@ -11,7 +11,7 @@
     "@emotion/react": "^11.10.5",
     "@metamask/eth-sig-util": "^6.0.0",
     "@web3-onboard/coinbase": "^2.2.5",
-    "@web3-onboard/core": "^2.20.5",
+    "@web3-onboard/core": "^2.21.2",
     "@web3-onboard/frontier": "^2.0.4",
     "@web3-onboard/gnosis": "^2.1.10",
     "@web3-onboard/infinity-wallet": "^2.0.4",
