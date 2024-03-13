@@ -25,7 +25,7 @@
     "buffer": "^6.0.3",
     "codemirror": "^5.61.1",
     "copy-to-clipboard": "^3.3.1",
-    "core-js": "^3.25.0",
+    "core-js": "^3.36.0",
     "craco-less": "^2.0.0",
     "echarts": "^5.4.3",
     "ethers": "5.6.9",
