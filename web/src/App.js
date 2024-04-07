@@ -41,6 +41,7 @@ setTwoToneColor("rgb(87,52,211)");
 class App extends Component {
   constructor(props) {
     super(props);
+    this.setThemeAlgorithm();
     let storageThemeAlgorithm = [];
     try {
       storageThemeAlgorithm = localStorage.getItem("themeAlgorithm") ? JSON.parse(localStorage.getItem("themeAlgorithm")) : ["default"];
@@ -51,6 +52,7 @@ class App extends Component {
       classes: props,
       selectedMenuKey: 0,
       account: undefined,
+      accessToken: undefined,
       uri: null,
       themeAlgorithm: storageThemeAlgorithm,
       themeData: Conf.ThemeDefault,
@@ -153,10 +155,15 @@ class App extends Component {
   }
 
   getLogo(themes) {
-    if (themes.includes("dark")) {
-      return `${Setting.StaticBaseUrl}/img/casdoor-logo_1185x256_dark.png`;
-    } else {
-      return `${Setting.StaticBaseUrl}/img/casdoor-logo_1185x256.png`;
+    return Setting.getLogo(themes);
+  }
+
+  setThemeAlgorithm() {
+    const currentUrl = window.location.href;
+    const url = new URL(currentUrl);
+    const themeType = url.searchParams.get("theme");
+    if (themeType === "dark" || themeType === "default") {
+      localStorage.setItem("themeAlgorithm", JSON.stringify([themeType]));
     }
   }
 
@@ -232,9 +239,11 @@ class App extends Component {
     AuthBackend.getAccount(query)
       .then((res) => {
         let account = null;
+        let accessToken = null;
         if (res.status === "ok") {
           account = res.data;
           account.organization = res.data2;
+          accessToken = res.data.accessToken;
 
           this.setLanguage(account);
           this.setTheme(Setting.getThemeData(account.organization), Conf.InitThemeAlgorithm);
@@ -246,6 +255,7 @@ class App extends Component {
 
         this.setState({
           account: account,
+          accessToken: accessToken,
         });
       });
   }
@@ -260,6 +270,7 @@ class App extends Component {
     return (
       <React.Fragment>
         {!this.state.account ? null : <div style={{display: "none"}} id="CasdoorApplicationName" value={this.state.account.signupApplication} />}
+        {!this.state.account ? null : <div style={{display: "none"}} id="CasdoorAccessToken" value={this.state.accessToken} />}
         <Footer id="footer" style={
           {
             textAlign: "center",
@@ -363,6 +374,7 @@ class App extends Component {
                         });
                       }}
                       onLoginSuccess={(redirectUrl) => {
+                        window.google?.accounts?.id?.cancel();
                         if (redirectUrl) {
                           localStorage.setItem("mfaRedirectUrl", redirectUrl);
                         }
